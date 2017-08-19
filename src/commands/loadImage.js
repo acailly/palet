@@ -53,6 +53,6 @@ export const loadImageFromFile = (imageFile) => {
 }
 
 export const loadSampleImage = () => {
-  const sampleImageFileName = '/sample.jpg'
+  const sampleImageFileName = process.env.PUBLIC_URL + '/sample.jpg'
   return loadImageFromFileName(sampleImageFileName)
 }

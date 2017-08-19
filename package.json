@@ -1,10 +1,11 @@
 {
   "name": "palet",
   "version": "0.1.0",
-  "homepage": "http://acailly.github.io",
+  "homepage": "http://acailly.github.io/palet",
   "private": true,
   "devDependencies": {
     "canvas-prebuilt": "^1.6.5-prerelease.1",
+    "gh-pages": "^1.0.0",
     "performance-now": "^2.1.0",
     "react-scripts": "1.0.6",
     "react-test-renderer": "^15.6.1",
@@ -26,6 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+	"predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   }
 }
