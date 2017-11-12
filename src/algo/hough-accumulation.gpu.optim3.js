@@ -5,6 +5,7 @@
 
 import 'jimp/browser/lib/jimp'
 import _ from 'lodash'
+import GPU from 'gpu.js'
 
 export const houghAccumulation = sourceImage => {
   let width = sourceImage.bitmap.width
@@ -37,8 +38,8 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
         var sin = this.thread.y - (radius * Math.sin(thetaRadians))
         sin += 0 // BUG
         var y0 = Math.floor(sin + 0.5)
-        if (x0 > 0 && y0 > 0 && x0 < this.dimensions.x && y0 < this.dimensions.y) {
-          var i = ((this.dimensions.x * y0) + x0) * 4
+        if (x0 > 0 && y0 > 0 && x0 < this.constants.width && y0 < this.constants.height) {
+          var i = ((this.constants.width * y0) + x0) * 4
           var red = DATA[i]
           if (red === 255) {
             accValue++
@@ -57,12 +58,17 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
     }
 
     return result
-  }).setDimensions([houghAcc.width, houghAcc.height])
+  })
+  .setOutput([houghAcc.width, houghAcc.height])
+  .setConstants({
+    width: houghAcc.width,
+    height: houghAcc.height
+  })
 
   const groupMaxima = gpu.createKernel(function (ACC) {
     var x = this.thread.x
     var y = this.thread.y
-    var width = this.dimensions.x
+    var width = this.constants.width
 
     var value = ACC[(width * y) + x]
 
@@ -82,13 +88,17 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
     } else {
       return value
     }
-  }).setDimensions([houghAcc.width, houghAcc.height])
+  })
+  .setOutput([houghAcc.width, houghAcc.height])
+  .setConstants({
+    width: houghAcc.width
+  })
 
   const groupResults = gpu.createKernel(function (ACC) {
     var x = this.thread.x
     var y = this.thread.y
     var z = this.thread.z
-    var width = this.dimensions.x
+    var width = this.constants.width
 
     var value = ACC[(width * y) + x]
     if (z === 0) {
@@ -97,7 +107,11 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
     } else {
       return Math.floor(value - (Math.floor(value / 100) * 100))
     }
-  }).setDimensions([houghAcc.width, houghAcc.height, 2])
+  })
+  .setOutput([houghAcc.width, houghAcc.height, 2])
+  .setConstants({
+    width: houghAcc.width
+  })
 
   const runComputeForAllRadius = gpu.combineKernels(computeAllRadius, groupMaxima, groupResults, function (width, height, DATA, threshold) {
     var mergedAcc = computeAllRadius(DATA, threshold)

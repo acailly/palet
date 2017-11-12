@@ -13,6 +13,7 @@
     "worker-loader": "^0.8.1"
   },
   "dependencies": {
+    "gpu.js": "^1.0.0-rc.8",
     "jimp": "^0.2.27",
     "material-ui": "^0.18.7",
     "react": "^15.5.4",
@@ -28,7 +29,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-	  "predeploy": "npm run build",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   }
 }

@@ -3,6 +3,7 @@
 
 import 'jimp/browser/lib/jimp'
 import _ from 'lodash'
+import GPU from 'gpu.js'
 
 const gpu = new GPU()
 
@@ -46,7 +47,7 @@ export const houghAccumulationGPU = sourceImage => {
     return 0
   }
   const initOnGPU = gpu.createKernel(init, {
-    dimensions: [width, height],
+    output: [width, height],
     mode: 'gpu'
   })
   const acc = initOnGPU()
@@ -65,8 +66,8 @@ export const computeForRadiusGPU = (houghAcc, radius) => {
   const run = function (DATA, radius) {
     var x = this.thread.x
     var y = this.thread.y
-    var width = this.dimensions.x
-    var height = this.dimensions.y
+    var width = this.constants.width
+    var height = this.constants.height
 
     var accValue = 0
     for (var theta = 0; theta < 360; theta++) {
@@ -86,8 +87,12 @@ export const computeForRadiusGPU = (houghAcc, radius) => {
     return accValue
   }
   const runOnGPU = gpu.createKernel(run, {
-    dimensions: [houghAcc.width, houghAcc.height],
-    mode: 'gpu'
+    output: [houghAcc.width, houghAcc.height],
+    mode: 'gpu',
+    constants: {
+      width: houghAcc.width,
+      height: houghAcc.height
+    }
   })
   houghAcc.accumulation = runOnGPU(houghAcc.image.bitmap.data, radius)
 
@@ -95,7 +100,7 @@ export const computeForRadiusGPU = (houghAcc, radius) => {
     return radius
   }
   const setRadiusOnGPU = gpu.createKernel(setRadius, {
-    dimensions: [houghAcc.width, houghAcc.height],
+    output: [houghAcc.width, houghAcc.height],
     mode: 'gpu'
   })
   houghAcc.accumulationRadius = setRadiusOnGPU(radius)
@@ -116,7 +121,7 @@ export const applyThresholdGPU = (houghAcc, threshold) => {
   }
 
   const runOnGPU = gpu.createKernel(run, {
-    dimensions: [houghAcc.width, houghAcc.height],
+    output: [houghAcc.width, houghAcc.height],
     mode: 'gpu'
   })
   houghAcc.accumulationRadius = runOnGPU(houghAcc.accumulation, houghAcc.accumulationRadius, threshold)
@@ -136,7 +141,7 @@ export const mergeWithGPU = (houghAcc, accToMerge) => {
     return Math.max(ACC1[y][x], ACC2[y][x])
   }
   const runOnGPU = gpu.createKernel(run, {
-    dimensions: [houghAcc.image.bitmap.width, houghAcc.image.bitmap.height],
+    output: [houghAcc.image.bitmap.width, houghAcc.image.bitmap.height],
     mode: 'gpu'
   })
   houghAcc.accumulation = runOnGPU(houghAcc.accumulation, otherAcc)
@@ -166,7 +171,7 @@ export const groupMaximaGPU = houghAcc => {
     }
   }
   const runOnGPU = gpu.createKernel(run, {
-    dimensions: [houghAcc.image.bitmap.width, houghAcc.image.bitmap.height],
+    output: [houghAcc.image.bitmap.width, houghAcc.image.bitmap.height],
     mode: 'gpu'
   })
   houghAcc.accumulation = runOnGPU(houghAcc.accumulation)
