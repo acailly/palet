@@ -1,7 +1,6 @@
 import {
   houghAccumulationGPU,
   computeForRadiusGPU,
-  computeForAllRadiusGPU,
   applyThresholdGPU,
   mergeWithGPU,
   groupMaximaGPU,

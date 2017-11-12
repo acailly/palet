@@ -1,9 +1,6 @@
 import {
   houghAccumulation,
   computeForRadius,
-  computeForRadiusScan,
-  computeForRadiusReverseOLD,
-  computeForRadiusReverse,
   applyThreshold,
   mergeWith,
   groupMaxima,

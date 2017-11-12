@@ -1,7 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import RaisedButton from 'material-ui/RaisedButton'
-import Icon from 'material-ui/svg-icons/image/crop-original'
 
 import { loadSampleImage } from '../commands/loadImage'
 

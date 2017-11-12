@@ -9,7 +9,7 @@ import 'jimp/browser/lib/jimp'
 import _ from 'lodash'
 import GPU from 'gpu.js'
 
-const gpu = new window.GPU()
+const gpu = new GPU()
 
 export const houghAccumulation = sourceImage => {
   let width = sourceImage.bitmap.width

@@ -1,13 +1,8 @@
 import {
   houghAccumulation,
-  computeForRadiusGPU,
   computeForAllRadiusGPU,
-  applyThresholdGPU,
-  mergeWithGPU,
-  groupMaximaGPU,
   normalize,
   drawMaxima,
-  debug
 } from './hough-accumulation.gpu.optim1'
 
 const circleDetectionGPU = (image, circleCount, threshold, minRadius, maxRadius) => {

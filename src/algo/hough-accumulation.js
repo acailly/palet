@@ -23,24 +23,6 @@ export const debug = houghAcc => {
   }
 }
 
-const getMaxAccumulation = (acc, width, height) => {
-    // now normalise to 255 and put in format for a pixel array
-  let max = 0
-
-    // Find max acc value
-  for (let x = 0; x < width; x++) {
-      // console.log('', 'Find max accumulation', x, '/', width)
-
-    for (let y = 0; y < height; y++) {
-      if (acc[y][x] > max) {
-        max = acc[y][x]
-      }
-    }
-  }
-
-  return max
-}
-
 export const houghAccumulation = sourceImage => {
   let width = sourceImage.bitmap.width
   let height = sourceImage.bitmap.height
