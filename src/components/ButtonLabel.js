@@ -20,10 +20,10 @@ const style = {
 
 const LoadSampleButton = ({imageData, busy, loadSampleImage}) => {
   const label = busy
-  ? 'wait for it...'
+  ? 'patience...'
   : imageData
-  ? 'or'
-  : 'Let\'s start with...'
+  ? 'ou'
+  : 'On commence par...'
 
   return (
     <div style={style.label}>

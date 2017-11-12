@@ -34,7 +34,7 @@ const TakePictureButton = ({loadImageFromFile}) => {
   return (
     <div>
       <RaisedButton
-        label='TAKE A PICTURE'
+        label='TA PHOTO'
         backgroundColor={blue100}
         style={style.button}
         icon={<Icon />}

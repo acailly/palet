@@ -27,7 +27,7 @@ const AnalyzeButton = ({imageData, busy, processImageFromImageData, mode}) => {
   return (
     <div>
       <RaisedButton
-        label='ANALYZE'
+        label='ANALYSER'
         backgroundColor={blue100}
         style={style.button}
         icon={<Icon />}

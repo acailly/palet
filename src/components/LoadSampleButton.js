@@ -23,7 +23,7 @@ const LoadSampleButton = ({loadSampleImage}) => {
   return (
     <div>
       <RaisedButton
-        label='LOAD SAMPLE'
+        label='UN EXEMPLE'
         backgroundColor={blue100}
         style={style.button}
         icon={<Icon />}
