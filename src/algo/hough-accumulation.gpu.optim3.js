@@ -1,6 +1,7 @@
 // OPTIM 3 :
+// - quelques contournement de bugs marqués BUG (voir https://github.com/gpujs/gpu.js/issues/152)
 // - on itère sur tous les radius en une passe
-/* globals Jimp */
+/* globals Jimp GPU */
 
 import 'jimp/browser/lib/jimp'
 import _ from 'lodash'
@@ -22,20 +23,28 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
   const gpu = new GPU()
   const computeAllRadius = gpu.createKernel(function (DATA, threshold) {
     var result = 0
+    result += 0 // BUG
     for (var radius = 10; radius < 31; radius++) {
       // Compute accumulation
       var accValue = 0
+      accValue += 0 // BUG
       for (var theta = 0; theta < 360; theta++) {
         var thetaRadians = (theta * 3.14159265) / 180
+        thetaRadians += 0 // BUG
         var cos = this.thread.x - (radius * Math.cos(thetaRadians))
+        cos += 0 // BUG
         var x0 = Math.floor(cos + 0.5)
+        x0 += 0 // BUG
         var sin = this.thread.y - (radius * Math.sin(thetaRadians))
+        sin += 0 // BUG
         var y0 = Math.floor(sin + 0.5)
         if (x0 > 0 && y0 > 0 && x0 < this.constants.width && y0 < this.constants.height) {
           var i = ((this.constants.width * y0) + x0) * 4
           var red = DATA[i]
           if (red === 255) {
             accValue++
+          } else { // BUG
+            for (var t = 0; t < 0; t++) { break }
           }
         }
       }
@@ -43,6 +52,8 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
       // Apply threshold
       if (accValue > threshold) {
         result = Math.max(result, (accValue * 100) + radius)
+      } else { // BUG
+        for (var s = 0; s < 0; s++) { break }
       }
     }
 
@@ -72,6 +83,7 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
       (ACC[(width * (y + 1)) + x]) >= value ||
       (ACC[(width * (y - 1)) + x]) > value
     ) {
+      for (var s = 0; s < 0; s++) { break } // BUG
       return 0
     } else {
       return value
@@ -90,6 +102,7 @@ export const computeForAllRadiusGPU = (houghAcc, threshold) => {
 
     var value = ACC[(width * y) + x]
     if (z === 0) {
+      for (var s = 0; s < 0; s++) { break } // BUG
       return Math.floor(value / 100)
     } else {
       return Math.floor(value - (Math.floor(value / 100) * 100))

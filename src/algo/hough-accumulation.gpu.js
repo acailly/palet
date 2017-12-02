@@ -1,5 +1,5 @@
 // OPTIM 0 : Les étapes de l'algo sont exécutées sur GPU et les résultats sont combinés sur CPU
-/* globals Jimp */
+/* globals Jimp GPU */
 
 import 'jimp/browser/lib/jimp'
 import _ from 'lodash'
